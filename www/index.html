@@ -539,25 +539,9 @@
                                 <input type="text" id="bs-fha-limit" data-i18n-placeholder="fhaLimitPlaceholder" readonly>
                             </div>
                         </div>
-                        <p style="font-size: 13px; color: var(--text-secondary); margin-top: 8px;" data-i18n="fha2026Hint">2026 FHA floor / ceiling 已更新，但县级额度仍建议以 HUD 官方 Mortgage Limits Search 再核验一次。</p>
-                        <p style="font-size: 13px; margin-top: 6px;"><a href="https://entp.hud.gov/idapp/html/hicostlook.cfm" target="_blank" rel="noopener noreferrer" data-i18n="fhaOfficialLookup">打开 HUD 官方 FHA Loan Limits 查询</a></p>
                     </div>
 
                     <div id="bs-va-fields" style="display: none;">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="bs-va-state" data-i18n="vaState">州 (State)</label>
-                                <select id="bs-va-state">
-                                    <option value="">选择州...</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="bs-va-county" data-i18n="vaCounty">县 / County</label>
-                                <select id="bs-va-county" disabled>
-                                    <option value="">选择县...</option>
-                                </select>
-                            </div>
-                        </div>
                         <div class="section-title" data-i18n="vaTitle">VA 贷款数据 (QM VA)</div>
                         <div class="form-group">
                             <label for="bs-va-region" data-i18n="vaRegion">地区 (Region)</label>
@@ -570,8 +554,6 @@
                             </select>
                         </div>
                         <div class="form-grid" id="bs-va-data" style="margin-top: 16px;"></div>
-                        <p style="font-size: 13px; color: var(--text-secondary); margin-top: 8px;" data-i18n="va2026Hint">VA 页已改为参考 2026 FHFA 县级 one-unit limit。若客户有 full entitlement，超过该参考值也不等于自动不能做。</p>
-                        <p style="font-size: 13px; margin-top: 6px;"><a href="https://www.va.gov/housing-assistance/home-loans/loan-limits/" target="_blank" rel="noopener noreferrer" data-i18n="vaOfficialLookup">打开 VA 官方 Loan Limits 说明</a></p>
                         
                         <div class="section-title" style="margin-top: 24px;" data-i18n="vaComparison">VA Loan Eligibility</div>
                         <div class="form-grid" id="bs-va-comparison">
@@ -1072,7 +1054,6 @@
         </div>
     </div>
 
-    <script src="fhfa-loan-limits-2026.js"></script>
     <script>
         // ==================== 多语言翻译包 ====================
         const translations = {
@@ -1233,40 +1214,6 @@
                 'alertLanguageDeveloping': 'Función de cambio de idioma en desarrollo...\nSelección actual: '
             }
         };
-
-        Object.assign(translations.zh, {
-            vaState: '州 (State)',
-            vaCounty: '县 / County',
-            va2026Hint: 'VA 页已改为参考 2026 FHFA 县级 one-unit limit。若客户有 full entitlement，超过该参考值也不等于自动不能做。',
-            vaOfficialLookup: '打开 VA 官方 Loan Limits 说明',
-            fha2026Hint: '2026 FHA floor / ceiling 已更新，但县级额度仍建议以 HUD 官方 Mortgage Limits Search 再核验一次。',
-            fhaOfficialLookup: '打开 HUD 官方 FHA Loan Limits 查询',
-            scheduleE: 'Schedule E / 租金总额 ($)',
-            leaseMonths: '使用月数',
-            rentalMonthly75: '月租金收入 ($，按 75% ÷ 月数)'
-        });
-        Object.assign(translations.en, {
-            vaState: 'State',
-            vaCounty: 'County',
-            va2026Hint: 'VA now references the 2026 FHFA county one-unit limit. Borrowers with full entitlement may still qualify above this reference amount.',
-            vaOfficialLookup: 'Open official VA loan-limit guidance',
-            fha2026Hint: 'The 2026 FHA floor / ceiling has been updated here, but county limits should still be verified in HUD Mortgage Limits Search.',
-            fhaOfficialLookup: 'Open official HUD FHA loan-limit lookup',
-            scheduleE: 'Schedule E / Lease Income ($)',
-            leaseMonths: 'Months Used',
-            rentalMonthly75: 'Monthly Rental Income (75% / months used)'
-        });
-        Object.assign(translations.es, {
-            vaState: 'Estado',
-            vaCounty: 'Condado',
-            va2026Hint: 'VA ahora usa como referencia el límite FHFA 2026 por condado para una unidad. Con entitlement completo, superar ese valor no significa rechazo automático.',
-            vaOfficialLookup: 'Abrir guía oficial de límites VA',
-            fha2026Hint: 'Aquí se actualizó el floor / ceiling FHA 2026, pero el límite del condado aún debe verificarse en la búsqueda oficial de HUD.',
-            fhaOfficialLookup: 'Abrir búsqueda oficial FHA de HUD',
-            scheduleE: 'Ingreso Schedule E / Arrendamiento ($)',
-            leaseMonths: 'Meses usados',
-            rentalMonthly75: 'Ingreso mensual por alquiler (75% / meses usados)'
-        });
 
         // ==================== 语言切换函数 ====================
         function changeLanguage(lang) {
@@ -1533,8 +1480,7 @@
         function calculateRentalIncome() {
             if (scheduleE && leaseMonths && rentalMonthly) {
                 const annual = parseFloat(scheduleE.value) || 0;
-                const months = Math.max(parseFloat(leaseMonths.value) || 12, 1);
-                const monthly = (annual * 0.75) / months;
+                const monthly = (annual * 0.75) / 12;
                 rentalMonthly.value = formatCurrency(monthly);
             }
         }
@@ -1821,7 +1767,7 @@
                 if (stateData && stateData.counties && stateData.counties[this.value]) {
                     limitInput.value = formatCurrency(stateData.counties[this.value][unitsSelect.value] || 0);
                 } else {
-                    limitInput.value = formatCurrency({ '1': 541287, '2': 693050, '3': 837700, '4': 1041125 }[unitsSelect.value] || 0);
+                    limitInput.value = formatCurrency({ '1': 498257, '2': 637950, '3': 771125, '4': 958350 }[unitsSelect.value] || 0);
                 }
             }
         });
@@ -1834,7 +1780,7 @@
                 if (stateData && stateData.counties && stateData.counties[countySelect.value]) {
                     limitInput.value = formatCurrency(stateData.counties[countySelect.value][this.value] || 0);
                 } else {
-                    limitInput.value = formatCurrency({ '1': 541287, '2': 693050, '3': 837700, '4': 1041125 }[this.value] || 0);
+                    limitInput.value = formatCurrency({ '1': 498257, '2': 637950, '3': 771125, '4': 958350 }[this.value] || 0);
                 }
             }
         });
@@ -1945,110 +1891,6 @@
         }
         
         document.getElementById('bs-va-region')?.addEventListener('change', updateVAData);
-
-        function initVASelectors() {
-            const legacyRegionField = document.getElementById('bs-va-region')?.closest('.form-group');
-            if (legacyRegionField) legacyRegionField.style.display = 'none';
-
-            const vaStateSelect = document.getElementById('bs-va-state');
-            const vaCountySelect = document.getElementById('bs-va-county');
-            const limits = window.FHFA_LIMITS_2026 || {};
-
-            if (!vaStateSelect || !vaCountySelect) return;
-
-            vaStateSelect.innerHTML = '<option value="">Select state...</option>';
-            Object.entries(limits)
-                .sort((a, b) => a[1].name.localeCompare(b[1].name))
-                .forEach(([abbr, info]) => {
-                    const option = document.createElement('option');
-                    option.value = abbr;
-                    option.textContent = `${info.name} (${abbr})`;
-                    vaStateSelect.appendChild(option);
-                });
-
-            vaStateSelect.addEventListener('change', () => {
-                vaCountySelect.innerHTML = '<option value="">Select county...</option>';
-                vaCountySelect.disabled = !vaStateSelect.value;
-                const stateInfo = limits[vaStateSelect.value];
-                if (!stateInfo) {
-                    updateVAData();
-                    return;
-                }
-
-                Object.keys(stateInfo.counties)
-                    .sort((a, b) => a.localeCompare(b))
-                    .forEach((county) => {
-                        const option = document.createElement('option');
-                        option.value = county;
-                        option.textContent = county;
-                        vaCountySelect.appendChild(option);
-                    });
-
-                updateVAData();
-            });
-
-            vaCountySelect.addEventListener('change', updateVAData);
-        }
-
-        function updateVAData() {
-            const vaStateSelect = document.getElementById('bs-va-state');
-            const vaCountySelect = document.getElementById('bs-va-county');
-            const vaDataDiv = document.getElementById('bs-va-data');
-            const limits = window.FHFA_LIMITS_2026 || {};
-
-            const selectedState = vaStateSelect?.value;
-            const selectedCounty = vaCountySelect?.value;
-            const stateInfo = selectedState ? limits[selectedState] : null;
-            const countyInfo = stateInfo && selectedCounty ? stateInfo.counties[selectedCounty] : null;
-
-            const homePrice = parseFloat(document.getElementById('bs-home-price').value) || 300000;
-            const downPayment = parseFloat(document.getElementById('bs-down-payment').value) || 0;
-            const loanAmount = Math.max(homePrice - downPayment, 0);
-            const ltv = homePrice > 0 ? (loanAmount / homePrice) * 100 : 0;
-
-            let fundingFeeRate = 2.2;
-            if (downPayment >= homePrice * 0.10) fundingFeeRate = 1.4;
-            else if (downPayment >= homePrice * 0.05) fundingFeeRate = 1.65;
-
-            const vaFundingFee = loanAmount * (fundingFeeRate / 100);
-            const countyLimit = countyInfo ? countyInfo['1'] : 832750;
-            const isWithinCountyReference = loanAmount <= countyLimit;
-            const conventionalPmiMonthly = ltv > 80 ? (loanAmount * 0.005) / 12 : 0;
-
-            if (vaDataDiv) {
-                vaDataDiv.innerHTML = `
-                    <div class="form-group"><label>FHFA 2026 One-Unit County Limit</label><input type="text" value="${formatCurrency(countyLimit)}" readonly></div>
-                    <div class="form-group"><label>Selected County</label><input type="text" value="${selectedCounty || 'Select a county'}" readonly></div>
-                    <div class="form-group"><label>VA Funding Fee Rate</label><input type="text" value="${fundingFeeRate.toFixed(2)}%" readonly></div>
-                    <div class="form-group"><label>Guidance</label><input type="text" value="County limit is a reference point; full entitlement may allow more." readonly style="background: rgba(0, 122, 255, 0.1);"></div>
-                `;
-            }
-
-            const vaLimitDisplay = document.getElementById('va-limit-display');
-            const vaLoanAmount = document.getElementById('va-loan-amount');
-            const vaEligibilityStatus = document.getElementById('va-eligibility-status');
-            const vaFundingFeeDisplay = document.getElementById('va-funding-fee');
-            const conventionalPmiDisplay = document.getElementById('conventional-pmi');
-            const vaBenefitDisplay = document.getElementById('va-benefit-display');
-            const vaMaxLtvDisplay = document.getElementById('va-max-ltv');
-
-            if (vaLimitDisplay) vaLimitDisplay.value = formatCurrency(countyLimit);
-            if (vaLoanAmount) vaLoanAmount.value = formatCurrency(loanAmount);
-            if (vaEligibilityStatus) {
-                vaEligibilityStatus.value = countyInfo
-                    ? (isWithinCountyReference
-                        ? 'Within county reference limit. Full underwriting still required.'
-                        : 'Above county reference limit. Full entitlement may still qualify; verify with lender.')
-                    : 'Select state and county to load the official 2026 FHFA reference limit.';
-                vaEligibilityStatus.style.color = countyInfo
-                    ? (isWithinCountyReference ? 'var(--success-green)' : 'var(--warning-orange)')
-                    : 'var(--text-secondary)';
-            }
-            if (vaFundingFeeDisplay) vaFundingFeeDisplay.value = formatCurrency(vaFundingFee) + ` (${fundingFeeRate.toFixed(2)}%)`;
-            if (conventionalPmiDisplay) conventionalPmiDisplay.value = formatCurrency(conventionalPmiMonthly) + '/mo';
-            if (vaBenefitDisplay) vaBenefitDisplay.value = '0% down possible + no monthly PMI';
-            if (vaMaxLtvDisplay) vaMaxLtvDisplay.value = ltv.toFixed(2) + '%';
-        }
         
         // 监听房价和首付变化，实时更新 VA 计算
         document.getElementById('bs-home-price')?.addEventListener('input', function() {
@@ -2070,7 +1912,6 @@
         });
         
         initFhaStates();
-        initVASelectors();
         
         document.getElementById('bs-loan-type')?.addEventListener('change', function() {
             const fhaFields = document.getElementById('bs-fha-fields');
