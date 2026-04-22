@@ -510,6 +510,16 @@
                         <button type="button" class="add-btn" onclick="addPropertyField('bs-properties-container', 'bs-property-input')" data-i18n="addProperty">+ 添加其他房产</button>
                     </div>
 
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label>Other Property P&amp;I ($)</label>
+                        <div id="bs-property-pi-container">
+                            <div class="form-group" style="margin-bottom: 8px;">
+                                <input type="number" class="bs-property-pi-input" value="0" data-i18n-placeholder="extraPropertyPi">
+                            </div>
+                        </div>
+                        <button type="button" class="add-btn" onclick="addPropertyField('bs-property-pi-container', 'bs-property-pi-input', 'extraPropertyPi')" data-i18n="addPropertyPi">+ Add Other Property P&amp;I</button>
+                    </div>
+
                     <div id="bs-fha-fields" style="display: none;">
                         <div class="section-title" data-i18n="fhaTitle">FHA 贷款限制查询 (QM FHA)</div>
                         <div class="form-grid">
@@ -787,6 +797,8 @@
                     </div>
 
                     <button type="button" class="add-btn" onclick="addJob2()" data-i18n="addJob">+ 增加一份工作</button>
+                    <button type="button" class="add-btn" onclick="addExtraJob()" data-i18n="addMoreJobs">+ Add More Jobs</button>
+                    <div id="extra-jobs-container"></div>
 
                     <!-- Self-Employed 收入 -->
                     <div class="section-title" data-i18n="selfEmployedIncome">自雇收入 (Self-Employed)</div>
@@ -825,6 +837,9 @@
                     </div>
                     <p style="font-size: 13px; color: var(--text-secondary); margin-top: 8px;" data-i18n="depreciationHint">DU 使用 2 年收入 +2 年折旧÷24 | LP 使用 1 年收入 +1 年折旧÷12</p>
 
+                    <button type="button" class="add-btn" onclick="addSelfEmploymentEntry()" data-i18n="addSelfEmployed">+ Add Self-Employed</button>
+                    <div id="extra-self-employed-container"></div>
+
                     <!-- Rental 收入 -->
                     <div class="section-title" data-i18n="rentalIncome">租金收入 (Rental Income)</div>
                     <div class="form-grid">
@@ -841,6 +856,8 @@
                             <input type="text" id="inc-rental-monthly" readonly data-i18n-placeholder="autoCalculate">
                         </div>
                     </div>
+                    <button type="button" class="add-btn" onclick="addRentalEntry()" data-i18n="addRentalIncome">+ Add Rental Income</button>
+                    <div id="extra-rental-container"></div>
 
                     <!-- 其他收入 -->
                     <div class="section-title" data-i18n="otherIncome">其他收入</div>
@@ -956,6 +973,42 @@
                             <label for="cc-prepaid-subtotal" data-i18n="prepaidSubtotal">Subtotal ($)</label>
                             <input type="text" id="cc-prepaid-subtotal" readonly data-i18n-placeholder="autoCalculate">
                         </div>
+                        <div class="form-group">
+                            <label for="cc-loan-amount-display" data-i18n="loanAmount">Loan Amount ($)</label>
+                            <input type="text" id="cc-loan-amount-display" readonly data-i18n-placeholder="autoCalculate">
+                        </div>
+                        <div class="form-group">
+                            <label for="cc-note-rate" data-i18n="noteRate">Note Rate (%)</label>
+                            <input type="number" id="cc-note-rate" value="6.5" step="0.125">
+                        </div>
+                        <div class="form-group">
+                            <label for="cc-prepaid-interest" data-i18n="prepaidInterest">Prepaid Interest ($)</label>
+                            <input type="text" id="cc-prepaid-interest" readonly data-i18n-placeholder="autoCalculate">
+                        </div>
+                        <div class="form-group">
+                            <label for="cc-annual-property-tax" data-i18n="annualPropertyTax">Annual Property Tax ($)</label>
+                            <input type="number" id="cc-annual-property-tax" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="cc-tax-escrow-months" data-i18n="taxEscrowMonths">Tax Escrow Months</label>
+                            <input type="number" id="cc-tax-escrow-months" value="6" min="0" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="cc-tax-escrow-amount" data-i18n="taxEscrowReserve">Tax Escrow Reserve ($)</label>
+                            <input type="text" id="cc-tax-escrow-amount" readonly data-i18n-placeholder="autoCalculate">
+                        </div>
+                        <div class="form-group">
+                            <label for="cc-annual-insurance" data-i18n="annualInsurance">Annual Insurance ($)</label>
+                            <input type="number" id="cc-annual-insurance" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="cc-insurance-escrow-months" data-i18n="insuranceEscrowMonths">Insurance Escrow Months</label>
+                            <input type="number" id="cc-insurance-escrow-months" value="2" min="0" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="cc-insurance-escrow-amount" data-i18n="insuranceEscrowReserve">Insurance Escrow Reserve ($)</label>
+                            <input type="text" id="cc-insurance-escrow-amount" readonly data-i18n-placeholder="autoCalculate">
+                        </div>
                     </div>
 
                     <div class="section-title" data-i18n="credits">Credits (抵免)</div>
@@ -1065,7 +1118,7 @@
                 'buySellTitle': '🏡 买卖房地产计算器', 'loanType': '贷款类型', 'loanTypeConventional': 'Conventional (查收入)', 'loanTypeNonQm': 'Non-QM (不查收入)', 'loanTypeDscr': 'DSCR (投资类，计算租金)', 'loanTypeBankStatement': 'Bank Statement (银行流水)', 'loanTypeFha': 'FHA (联邦住房贷款)', 'loanTypeVa': 'VA (退伍军人贷款)',
                 'homePrice': '房价 ($)', 'downPayment': '首付 ($)', 'downPaymentPercent': '首付百分比 (%)', 'interestRate': '利率 (%)', 'propertyTax': '地税 ($/年)', 'homeInsurance': '保险 ($/年)', 'pmi': 'PMI ($/月，自动计算如果<20%)', 'hoa': 'HOA ($/月)', 'creditScore': '信用分',
                 'credit760': '760+ (Excellent)', 'credit740': '720-759 (Very Good)', 'credit700': '700-720 (Good)', 'credit680': '680-719 (Good)', 'credit640': '640-679 (Fair)', 'credit620': '620-660 (Poor)', 'credit600': '620 以下 (Very Poor)',
-                'monthlyDebts': '月负债 ($)', 'addDebt': '+ 添加其他负债', 'extraDebt': '额外负债', 'otherProperties': '其他房产月供 ($)', 'addProperty': '+ 添加其他房产', 'extraProperty': '额外房产月供',
+                'monthlyDebts': '月负债 ($)', 'addDebt': '+ 添加其他负债', 'extraDebt': '额外负债', 'otherProperties': '其他房产月供 ($)', 'addProperty': '+ 添加其他房产', 'extraProperty': '额外房产月供', 'addPropertyPi': '+ 添加其他房产 P&I', 'extraPropertyPi': '其他房产 P&I',
                 'dscrTitle': 'DSCR 投资房产计算', 'rentalIncomeMonthly': '月租金收入 ($)', 'dscrResult': 'DSCR 比率', 'autoCalculate': '自动计算', 'dscrHint': 'DSCR > 1.2 = 达标 | DSCR > 1.0 = 正现金流 | DSCR < 1.0 = 负现金流',
                 'fhaTitle': 'FHA 贷款限制查询 (QM FHA)', 'fhaState': '州 (State)', 'fhaCounty': '县 (County)', 'fhaUnits': '单元数', 'fhaLimit': 'FHA Loan Limit', 'fhaLimitPlaceholder': '自动显示',
                 'vaTitle': 'VA 贷款数据 (QM VA)', 'vaRegion': '地区 (Region)', 'vaRegionSouth': '南方地区', 'vaRegionNortheast': '东北地区', 'vaRegionMidwest': '中西部地区', 'vaRegionWest': '西部地区',
@@ -1076,7 +1129,7 @@
                 'currentLoanInfo': '当前贷款信息', 'homeValue': '房屋当前价值 ($)', 'currentBalance': '当前余额 ($)', 'currentRate': '当前利率 (%)', 'currentPayment': '当前 P&I 月供 ($)',
                 'newLoanInfo': '新贷款信息', 'newRate': '新利率 (%)', 'newTerm': '新 Term', 'term30': '30 年', 'term20': '20 年', 'term15': '15 年', 'term10': '10 年',
                 'closingCosts': 'Closing Costs ($)', 'closingCostsHint': '可从 Closing Cost 计算器导入', 'cashOutDetails': 'Cash Out 详情', 'availableCashOut': '当前可用 Cash Out ($)', 'desiredCash': '希望拿到 Cash ($)', 'calculateRefinance': '计算重贷方案',
-                'incomeTitle': '💵 收入计算器', 'job1': '工作 1 (必填)', 'job2': '工作 2 (选填)', 'removeJob': '移除', 'addJob': '+ 增加一份工作',
+                'incomeTitle': '💵 收入计算器', 'job1': '工作 1 (必填)', 'job2': '工作 2 (选填)', 'removeJob': '移除', 'addJob': '+ 增加一份工作', 'addMoreJobs': '+ 继续添加工作', 'addSelfEmployed': '+ 添加自雇收入', 'addRentalIncome': '+ 添加租金收入', 'additionalJob': '附加工作', 'additionalSelfEmployed': '附加自雇收入', 'additionalRental': '附加租金收入',
                 'w2Salary': 'W2 工资', 'hourlyWorker': '小时工', 'w2Period': '周期', 'w2Amount': '金额 ($)',
                 'periodMonthly': '月薪', 'periodBiweekly': '双周薪', 'periodWeekly': '周薪', 'periodAnnually': '年薪',
                 'hourlyRate': '时薪 ($)', 'hoursPerWeek': '每周小时', 'bonus': 'Bonus/年 ($)', 'monthlyIncome': '月收入 ($)',
@@ -1086,7 +1139,7 @@
                 'otherIncome': '其他收入', 'childSupport': '儿童抚养 ($/月)', 'socialSecurity': '社会福利 ($/月)', 'other': '其他 ($/月)', 'calculateIncome': '计算总收入',
                 'closingCostTitle': '📋 Closing Cost 计算器', 'downPaymentInfo': '首付信息', 'lenderFees': 'Lender Fees (贷款机构费用)', 'processingFee': 'Processing Fee ($)', 'underwritingFee': 'Underwriting Fee ($)', 'discountPoints': 'Discount Points ($)',
                 'thirdPartyTitle': 'Third Party + Title (第三方 + 产权费用)', 'appraisal': 'Appraisal ($)', 'creditReport': 'Credit Report ($)', 'titleInsurance': 'Title Insurance ($)', 'settlement': 'Settlement/Attorney ($)', 'recordingFee': 'Recording Fee ($)', 'transferTax': 'Transfer Tax ($)', 'misc': '杂项 ($)',
-                'prepaid': 'Prepaid (预付费用)', 'closingDate': 'Closing Date', 'prepaidDays': '预付天数 (自动计算)', 'prepaidTax': '预付地税 ($)', 'escrowMonths': 'Escrow 月份', 'prepaidSubtotal': 'Subtotal ($)',
+                'prepaid': 'Prepaid (预付费用)', 'closingDate': 'Closing Date', 'prepaidDays': '预付天数 (自动计算)', 'prepaidTax': '预付地税 ($)', 'escrowMonths': 'Escrow 月份', 'prepaidSubtotal': 'Subtotal ($)', 'noteRate': 'Note Rate (%)', 'prepaidInterest': '预付利息 ($)', 'annualPropertyTax': '年度地税 ($)', 'taxEscrowMonths': '地税 Escrow 月数', 'taxEscrowReserve': '地税 Escrow 预留 ($)', 'annualInsurance': '年度保险 ($)', 'insuranceEscrowMonths': '保险 Escrow 月数', 'insuranceEscrowReserve': '保险 Escrow 预留 ($)', 'monthsText': '个月',
                 'credits': 'Credits (抵免)', 'lenderCredit': 'Lender Credit ($)', 'sellerCredit': 'Seller Credit ($)', 'calculateTotal': '计算总费用',
                 'aboutTitle': 'ℹ️ 关于', 'languageSection': '语言选择 / Language Selection', 'languageDesc': '本网站支持中文、英文、西班牙语三种语言',
                 'helpSection': '使用说明 / Help', 'helpBuySell': '输入房价、首付、利率等信息，计算月供、LTV、DTI 等关键指标。支持 Conventional、FHA、VA、DSCR 等多种贷款类型。',
@@ -1099,10 +1152,10 @@
                 'disclaimerEn': 'This calculator is for reference only and does not constitute loan advice or commitment. Actual loan terms are subject to lender approval. Interest rates, fees, etc. may vary based on individual credit, location, and lender. Please consult a professional loan advisor before making financial decisions.',
                 'footerHelp': '使用说明', 'footerContact': '联系我们', 'footerVersion': '版本历史', 'footerDisclaimer': '免责声明', 'footerCopyright': '© 2026 Loan Calculator Suite. All rights reserved.', 'footerVersionText': 'Version 1.0.1 | Last Updated: 2026-03-21',
                 'modalTitle': '计算结果',
-                'resultMonthlyPayment': '月供总数', 'resultLoanAmount': '贷款总额', 'resultLtv': 'LTV', 'resultPI': 'P&I', 'resultPrincipalInterest': 'Principal & Interest', 'resultPropertyTax': 'Property Tax', 'resultHomeInsurance': 'Home Insurance', 'resultPmi': 'PMI', 'resultHoa': 'HOA', 'resultOtherDebts': '其他负债', 'resultOtherProperties': '其他房产', 'resultPitiTotal': 'PITI + 其他',
+                'resultMonthlyPayment': '月供总数', 'resultLoanAmount': '贷款总额', 'resultLtv': 'LTV', 'resultPI': 'P&I', 'resultPrincipalInterest': 'Principal & Interest', 'resultPropertyTax': 'Property Tax', 'resultHomeInsurance': 'Home Insurance', 'resultPmi': 'PMI', 'resultHoa': 'HOA', 'resultOtherDebts': '其他负债', 'resultOtherProperties': '其他房产', 'resultOtherPropertyPi': '其他房产 P&I', 'resultPitiTotal': 'PITI + 其他',
                 'requiredIncomeTitle': '需要的月收入', 'requiredIncomeDesc': '根据 DTI 标准，您需要达到以下月收入才能获批贷款：', 'dti36Conservative': '36% DTI (保守)', 'dti43Standard': '43% DTI (标准)', 'dti50Aggressive': '50% DTI (较高)',
                 'resultNewLoan': '新贷款额', 'resultNewLtv': '新 LTV', 'resultCashAvailable': '能拿到 Cash', 'resultNewPayment': '新月供', 'resultCurrentPayment': '当前 Payment', 'resultMonthlySaving': '每月 Saving', 'resultBreakEven': 'Break Even', 'resultBreakEvenMonths': '个月',
-                'resultW2Income': 'W2 月收入', 'resultHourlyIncome': '小时工月收入', 'resultSelfEmployedIncome': '自雇月收入', 'resultRentalIncome': '租金月收入 (75%)', 'resultChildSupport': '儿童抚养', 'resultSocialSecurity': '社会福利', 'resultOther': '其他', 'resultTotalIncome': '总收入',
+                'resultW2Income': 'W2 月收入', 'resultHourlyIncome': '小时工月收入', 'resultSelfEmployedIncome': '自雇月收入', 'resultRentalIncome': '租金月收入 (75%)', 'resultAdditionalJobs': '附加工作收入', 'resultAdditionalSelfEmployed': '附加自雇收入', 'resultAdditionalRentalIncome': '附加租金收入', 'resultChildSupport': '儿童抚养', 'resultSocialSecurity': '社会福利', 'resultOther': '其他', 'resultTotalIncome': '总收入',
                 'resultDownPayment': 'Down Payment', 'resultTotalCost': '总费用', 'resultLenderFeesSubtotal': 'Lender Fees 小计', 'resultThirdPartySubtotal': 'Third Party 小计', 'resultPrepaidSubtotal': 'Prepaid 小计', 'resultTotalClosingCost': '总 Closing Cost', 'daysText': '天',
                 'alertHelpTitle': '使用说明：', 'alertHelpContent': '\n\n1. 买卖房地产：输入房价、首付、利率等，计算月供和 DTI\n2. 重贷：比较新旧贷款，计算节省和回本时间\n3. 收入计算：汇总各类收入来源\n4. Closing Cost：详细计算交易费用\n\n如有问题请联系：daviddairealty@gmail.com',
                 'alertVersionTitle': '版本历史：', 'alertVersionContent': '\n\nv1.0.1 (2026-03-21)\n- 添加 DSCR 租金收入计算\n- 添加 VA 贷款对比功能\n- 重构收入计算逻辑\n- 支持多份工作收入\n\nv1.0.0 (2026-03-21)\n- 初始版本\n- 5 大核心功能上线\n- 苹果风格 UI 设计',
@@ -1117,7 +1170,7 @@
                 'buySellTitle': '🏡 Buy/Sell Real Estate Calculator', 'loanType': 'Loan Type', 'loanTypeConventional': 'Conventional (Verify Income)', 'loanTypeNonQm': 'Non-QM (No Income Verification)', 'loanTypeDscr': 'DSCR (Investment, Calculate Rent)', 'loanTypeBankStatement': 'Bank Statement', 'loanTypeFha': 'FHA (Federal Housing Administration)', 'loanTypeVa': 'VA (Veterans Affairs)',
                 'homePrice': 'Home Price ($)', 'downPayment': 'Down Payment ($)', 'downPaymentPercent': 'Down Payment (%)', 'interestRate': 'Interest Rate (%)', 'propertyTax': 'Property Tax ($/year)', 'homeInsurance': 'Home Insurance ($/year)', 'pmi': 'PMI ($/month, auto if <20%)', 'hoa': 'HOA ($/month)', 'creditScore': 'Credit Score',
                 'credit760': '760+ (Excellent)', 'credit740': '720-759 (Very Good)', 'credit700': '700-720 (Good)', 'credit680': '680-719 (Good)', 'credit640': '640-679 (Fair)', 'credit620': '620-660 (Poor)', 'credit600': 'Below 620 (Very Poor)',
-                'monthlyDebts': 'Monthly Debts ($)', 'addDebt': '+ Add Other Debt', 'extraDebt': 'Extra Debt', 'otherProperties': 'Other Property Payments ($)', 'addProperty': '+ Add Other Property', 'extraProperty': 'Extra Property Payment',
+                'monthlyDebts': 'Monthly Debts ($)', 'addDebt': '+ Add Other Debt', 'extraDebt': 'Extra Debt', 'otherProperties': 'Other Property Payments ($)', 'addProperty': '+ Add Other Property', 'extraProperty': 'Extra Property Payment', 'addPropertyPi': '+ Add Other Property P&I', 'extraPropertyPi': 'Other Property P&I',
                 'dscrTitle': 'DSCR Investment Property Calculation', 'rentalIncomeMonthly': 'Monthly Rental Income ($)', 'dscrResult': 'DSCR Ratio', 'autoCalculate': 'Auto Calculate', 'dscrHint': 'DSCR > 1.2 = Qualified | DSCR > 1.0 = Positive Cash Flow | DSCR < 1.0 = Negative Cash Flow',
                 'fhaTitle': 'FHA Loan Limit Query (QM FHA)', 'fhaState': 'State', 'fhaCounty': 'County', 'fhaUnits': 'Units', 'fhaLimit': 'FHA Loan Limit', 'fhaLimitPlaceholder': 'Auto Display',
                 'vaTitle': 'VA Loan Data (QM VA)', 'vaRegion': 'Region', 'vaRegionSouth': 'South Region', 'vaRegionNortheast': 'Northeast Region', 'vaRegionMidwest': 'Midwest Region', 'vaRegionWest': 'West Region',
@@ -1128,7 +1181,7 @@
                 'currentLoanInfo': 'Current Loan Information', 'homeValue': 'Current Home Value ($)', 'currentBalance': 'Current Balance ($)', 'currentRate': 'Current Interest Rate (%)', 'currentPayment': 'Current P&I Payment ($)',
                 'newLoanInfo': 'New Loan Information', 'newRate': 'New Interest Rate (%)', 'newTerm': 'New Term', 'term30': '30 Years', 'term20': '20 Years', 'term15': '15 Years', 'term10': '10 Years',
                 'closingCosts': 'Closing Costs ($)', 'closingCostsHint': 'Can import from Closing Cost Calculator', 'cashOutDetails': 'Cash Out Details', 'availableCashOut': 'Available Cash Out ($)', 'desiredCash': 'Desired Cash ($)', 'calculateRefinance': 'Calculate Refinance Plan',
-                'incomeTitle': '💵 Income Calculator', 'job1': 'Job 1 (Required)', 'job2': 'Job 2 (Optional)', 'removeJob': 'Remove', 'addJob': '+ Add Another Job',
+                'incomeTitle': '💵 Income Calculator', 'job1': 'Job 1 (Required)', 'job2': 'Job 2 (Optional)', 'removeJob': 'Remove', 'addJob': '+ Add Another Job', 'addMoreJobs': '+ Add More Jobs', 'addSelfEmployed': '+ Add Self-Employed', 'addRentalIncome': '+ Add Rental Income', 'additionalJob': 'Additional Job', 'additionalSelfEmployed': 'Additional Self-Employed', 'additionalRental': 'Additional Rental',
                 'w2Salary': 'W2 Salary', 'hourlyWorker': 'Hourly Worker', 'w2Period': 'Period', 'w2Amount': 'Amount ($)',
                 'periodMonthly': 'Monthly', 'periodBiweekly': 'Biweekly', 'periodWeekly': 'Weekly', 'periodAnnually': 'Annually',
                 'hourlyRate': 'Hourly Rate ($)', 'hoursPerWeek': 'Hours per Week', 'bonus': 'Bonus/Year ($)', 'monthlyIncome': 'Monthly Income ($)',
@@ -1138,7 +1191,7 @@
                 'otherIncome': 'Other Income', 'childSupport': 'Child Support ($/month)', 'socialSecurity': 'Social Security ($/month)', 'other': 'Other ($/month)', 'calculateIncome': 'Calculate Total Income',
                 'closingCostTitle': '📋 Closing Cost Calculator', 'downPaymentInfo': 'Down Payment Information', 'lenderFees': 'Lender Fees', 'processingFee': 'Processing Fee ($)', 'underwritingFee': 'Underwriting Fee ($)', 'discountPoints': 'Discount Points ($)',
                 'thirdPartyTitle': 'Third Party + Title Fees', 'appraisal': 'Appraisal ($)', 'creditReport': 'Credit Report ($)', 'titleInsurance': 'Title Insurance ($)', 'settlement': 'Settlement/Attorney ($)', 'recordingFee': 'Recording Fee ($)', 'transferTax': 'Transfer Tax ($)', 'misc': 'Miscellaneous ($)',
-                'prepaid': 'Prepaid', 'closingDate': 'Closing Date', 'prepaidDays': 'Prepaid Days (Auto Calculate)', 'prepaidTax': 'Prepaid Property Tax ($)', 'escrowMonths': 'Escrow Months', 'prepaidSubtotal': 'Subtotal ($)',
+                'prepaid': 'Prepaid', 'closingDate': 'Closing Date', 'prepaidDays': 'Prepaid Days (Auto Calculate)', 'prepaidTax': 'Prepaid Property Tax ($)', 'escrowMonths': 'Escrow Months', 'prepaidSubtotal': 'Subtotal ($)', 'noteRate': 'Note Rate (%)', 'prepaidInterest': 'Prepaid Interest ($)', 'annualPropertyTax': 'Annual Property Tax ($)', 'taxEscrowMonths': 'Tax Escrow Months', 'taxEscrowReserve': 'Tax Escrow Reserve ($)', 'annualInsurance': 'Annual Insurance ($)', 'insuranceEscrowMonths': 'Insurance Escrow Months', 'insuranceEscrowReserve': 'Insurance Escrow Reserve ($)', 'monthsText': ' months',
                 'credits': 'Credits', 'lenderCredit': 'Lender Credit ($)', 'sellerCredit': 'Seller Credit ($)', 'calculateTotal': 'Calculate Total Cost',
                 'aboutTitle': 'ℹ️ About', 'languageSection': 'Language / Language Selection', 'languageDesc': 'This website supports Chinese, English, and Spanish',
                 'helpSection': 'Help / Usage Instructions', 'helpBuySell': 'Enter home price, down payment, interest rate, etc. to calculate monthly payment, LTV, DTI and other key indicators. Supports Conventional, FHA, VA, DSCR and other loan types.',
@@ -1151,10 +1204,10 @@
                 'disclaimerEn': 'This calculator is for reference only and does not constitute loan advice or commitment. Actual loan terms are subject to lender approval. Interest rates, fees, etc. may vary based on individual credit, location, and lender. Please consult a professional loan advisor before making financial decisions.',
                 'footerHelp': 'Help', 'footerContact': 'Contact Us', 'footerVersion': 'Version History', 'footerDisclaimer': 'Disclaimer', 'footerCopyright': '© 2026 Loan Calculator Suite. All rights reserved.', 'footerVersionText': 'Version 1.0.1 | Last Updated: 2026-03-21',
                 'modalTitle': 'Calculation Results',
-                'resultMonthlyPayment': 'Total Monthly Payment', 'resultLoanAmount': 'Total Loan Amount', 'resultLtv': 'LTV', 'resultPI': 'P&I', 'resultPrincipalInterest': 'Principal & Interest', 'resultPropertyTax': 'Property Tax', 'resultHomeInsurance': 'Home Insurance', 'resultPmi': 'PMI', 'resultHoa': 'HOA', 'resultOtherDebts': 'Other Debts', 'resultOtherProperties': 'Other Properties', 'resultPitiTotal': 'PITI + Others',
+                'resultMonthlyPayment': 'Total Monthly Payment', 'resultLoanAmount': 'Total Loan Amount', 'resultLtv': 'LTV', 'resultPI': 'P&I', 'resultPrincipalInterest': 'Principal & Interest', 'resultPropertyTax': 'Property Tax', 'resultHomeInsurance': 'Home Insurance', 'resultPmi': 'PMI', 'resultHoa': 'HOA', 'resultOtherDebts': 'Other Debts', 'resultOtherProperties': 'Other Properties', 'resultOtherPropertyPi': 'Other Property P&I', 'resultPitiTotal': 'PITI + Others',
                 'requiredIncomeTitle': 'Required Monthly Income', 'requiredIncomeDesc': 'According to DTI standards, you need to achieve the following monthly income to qualify for the loan:', 'dti36Conservative': '36% DTI (Conservative)', 'dti43Standard': '43% DTI (Standard)', 'dti50Aggressive': '50% DTI (Aggressive)',
                 'resultNewLoan': 'New Loan Amount', 'resultNewLtv': 'New LTV', 'resultCashAvailable': 'Cash Available', 'resultNewPayment': 'New Payment', 'resultCurrentPayment': 'Current Payment', 'resultMonthlySaving': 'Monthly Saving', 'resultBreakEven': 'Break Even', 'resultBreakEvenMonths': ' months',
-                'resultW2Income': 'W2 Monthly Income', 'resultHourlyIncome': 'Hourly Monthly Income', 'resultSelfEmployedIncome': 'Self-Employed Monthly Income', 'resultRentalIncome': 'Rental Monthly Income (75%)', 'resultChildSupport': 'Child Support', 'resultSocialSecurity': 'Social Security', 'resultOther': 'Other', 'resultTotalIncome': 'Total Income',
+                'resultW2Income': 'W2 Monthly Income', 'resultHourlyIncome': 'Hourly Monthly Income', 'resultSelfEmployedIncome': 'Self-Employed Monthly Income', 'resultRentalIncome': 'Rental Monthly Income (75%)', 'resultAdditionalJobs': 'Additional Jobs', 'resultAdditionalSelfEmployed': 'Additional Self-Employed', 'resultAdditionalRentalIncome': 'Additional Rental Income', 'resultChildSupport': 'Child Support', 'resultSocialSecurity': 'Social Security', 'resultOther': 'Other', 'resultTotalIncome': 'Total Income',
                 'resultDownPayment': 'Down Payment', 'resultTotalCost': 'Total Cost', 'resultLenderFeesSubtotal': 'Lender Fees Subtotal', 'resultThirdPartySubtotal': 'Third Party Subtotal', 'resultPrepaidSubtotal': 'Prepaid Subtotal', 'resultTotalClosingCost': 'Total Closing Cost', 'daysText': ' days',
                 'alertHelpTitle': 'Help:', 'alertHelpContent': '\n\n1. Buy/Sell: Enter home price, down payment, rate, etc. to calculate monthly payment and DTI\n2. Refinance: Compare loans, calculate savings and break-even time\n3. Income: Summarize all income sources\n4. Closing Cost: Detailed transaction fee calculation\n\nContact: daviddairealty@gmail.com',
                 'alertVersionTitle': 'Version History:', 'alertVersionContent': '\n\nv1.0.1 (2026-03-21)\n- Added DSCR rental income calculation\n- Added VA loan comparison\n- Refactored income calculation logic\n- Support multiple jobs income\n\nv1.0.0 (2026-03-21)\n- Initial release\n- 5 core features launched\n- Apple-style UI design',
@@ -1169,7 +1222,7 @@
                 'buySellTitle': '🏡 Calculadora de Comprar y Vender Bienes Raíces', 'loanType': 'Tipo de Préstamo', 'loanTypeConventional': 'Convencional (Verificar Ingresos)', 'loanTypeNonQm': 'Non-QM (Sin Verificación de Ingresos)', 'loanTypeDscr': 'DSCR (Inversión, Calcular Renta)', 'loanTypeBankStatement': 'Estado de Cuenta Bancario', 'loanTypeFha': 'FHA (Administración Federal de Vivienda)', 'loanTypeVa': 'VA (Asuntos de Veteranos)',
                 'homePrice': 'Precio de la Casa ($)', 'downPayment': 'Pago Inicial ($)', 'downPaymentPercent': 'Pago Inicial (%)', 'interestRate': 'Tasa de Interés (%)', 'propertyTax': 'Impuesto Predial ($/año)', 'homeInsurance': 'Seguro del Hogar ($/año)', 'pmi': 'PMI ($/mes, automático si <20%)', 'hoa': 'HOA ($/mes)', 'creditScore': 'Puntaje Crediticio',
                 'credit760': '760+ (Excelente)', 'credit740': '720-759 (Muy Bueno)', 'credit700': '700-720 (Bueno)', 'credit680': '680-719 (Bueno)', 'credit640': '640-679 (Regular)', 'credit620': '620-660 (Pobre)', 'credit600': 'Menos de 620 (Muy Pobre)',
-                'monthlyDebts': 'Deudas Mensuales ($)', 'addDebt': '+ Agregar Otra Deuda', 'extraDebt': 'Deuda Extra', 'otherProperties': 'Pagos de Otras Propiedades ($)', 'addProperty': '+ Agregar Otra Propiedad', 'extraProperty': 'Pago de Propiedad Extra',
+                'monthlyDebts': 'Deudas Mensuales ($)', 'addDebt': '+ Agregar Otra Deuda', 'extraDebt': 'Deuda Extra', 'otherProperties': 'Pagos de Otras Propiedades ($)', 'addProperty': '+ Agregar Otra Propiedad', 'extraProperty': 'Pago de Propiedad Extra', 'addPropertyPi': '+ Agregar P&I de Otra Propiedad', 'extraPropertyPi': 'P&I de Otra Propiedad',
                 'dscrTitle': 'Cálculo de Propiedad de Inversión DSCR', 'rentalIncomeMonthly': 'Ingreso Mensual por Alquiler ($)', 'dscrResult': 'Relación DSCR', 'autoCalculate': 'Cálculo Automático', 'dscrHint': 'DSCR > 1.2 = Calificado | DSCR > 1.0 = Flujo de Efectivo Positivo | DSCR < 1.0 = Flujo de Efectivo Negativo',
                 'fhaTitle': 'Consulta de Límite de Préstamo FHA (QM FHA)', 'fhaState': 'Estado', 'fhaCounty': 'Condado', 'fhaUnits': 'Unidades', 'fhaLimit': 'Límite de Préstamo FHA', 'fhaLimitPlaceholder': 'Visualización Automática',
                 'vaTitle': 'Datos de Préstamo VA (QM VA)', 'vaRegion': 'Región', 'vaRegionSouth': 'Región Sur', 'vaRegionNortheast': 'Región Noreste', 'vaRegionMidwest': 'Región Medio Oeste', 'vaRegionWest': 'Región Oeste',
@@ -1180,7 +1233,7 @@
                 'currentLoanInfo': 'Información del Préstamo Actual', 'homeValue': 'Valor Actual de la Casa ($)', 'currentBalance': 'Saldo Actual ($)', 'currentRate': 'Tasa de Interés Actual (%)', 'currentPayment': 'Pago P&I Actual ($)',
                 'newLoanInfo': 'Información del Nuevo Préstamo', 'newRate': 'Nueva Tasa de Interés (%)', 'newTerm': 'Nuevo Plazo', 'term30': '30 Años', 'term20': '20 Años', 'term15': '15 Años', 'term10': '10 Años',
                 'closingCosts': 'Costos de Cierre ($)', 'closingCostsHint': 'Se puede importar desde la Calculadora de Costos de Cierre', 'cashOutDetails': 'Detalles de Retiro de Efectivo', 'availableCashOut': 'Efectivo Disponible ($)', 'desiredCash': 'Efectivo Deseado ($)', 'calculateRefinance': 'Calcular Plan de Refinanciamiento',
-                'incomeTitle': '💵 Calculadora de Ingresos', 'job1': 'Trabajo 1 (Obligatorio)', 'job2': 'Trabajo 2 (Opcional)', 'removeJob': 'Eliminar', 'addJob': '+ Agregar Otro Trabajo',
+                'incomeTitle': '💵 Calculadora de Ingresos', 'job1': 'Trabajo 1 (Obligatorio)', 'job2': 'Trabajo 2 (Opcional)', 'removeJob': 'Eliminar', 'addJob': '+ Agregar Otro Trabajo', 'addMoreJobs': '+ Agregar Más Trabajos', 'addSelfEmployed': '+ Agregar Trabajo por Cuenta Propia', 'addRentalIncome': '+ Agregar Ingreso por Alquiler', 'additionalJob': 'Trabajo Adicional', 'additionalSelfEmployed': 'Trabajo por Cuenta Propia Adicional', 'additionalRental': 'Alquiler Adicional',
                 'w2Salary': 'Salario W2', 'hourlyWorker': 'Trabajador por Hora', 'w2Period': 'Período', 'w2Amount': 'Monto ($)',
                 'periodMonthly': 'Mensual', 'periodBiweekly': 'Quincenal', 'periodWeekly': 'Semanal', 'periodAnnually': 'Anual',
                 'hourlyRate': 'Tarifa por Hora ($)', 'hoursPerWeek': 'Horas por Semana', 'bonus': 'Bono/Año ($)', 'monthlyIncome': 'Ingreso Mensual ($)',
@@ -1190,7 +1243,7 @@
                 'otherIncome': 'Otros Ingresos', 'childSupport': 'Manutención de Niños ($/mes)', 'socialSecurity': 'Seguro Social ($/mes)', 'other': 'Otro ($/mes)', 'calculateIncome': 'Calcular Ingreso Total',
                 'closingCostTitle': '📋 Calculadora de Costos de Cierre', 'downPaymentInfo': 'Información del Pago Inicial', 'lenderFees': 'Comisiones del Prestamista', 'processingFee': 'Comisión de Procesamiento ($)', 'underwritingFee': 'Comisión de Suscripción ($)', 'discountPoints': 'Puntos de Descuento ($)',
                 'thirdPartyTitle': 'Terceros + Tarifas de Título', 'appraisal': 'Avalúo ($)', 'creditReport': 'Reporte de Crédito ($)', 'titleInsurance': 'Seguro de Título ($)', 'settlement': 'Liquidación/Abogado ($)', 'recordingFee': 'Tarifa de Registro ($)', 'transferTax': 'Impuesto de Transferencia ($)', 'misc': 'Misceláneos ($)',
-                'prepaid': 'Prepagos', 'closingDate': 'Fecha de Cierre', 'prepaidDays': 'Días Prepagos (Cálculo Automático)', 'prepaidTax': 'Impuesto Predial Prepagado ($)', 'escrowMonths': 'Meses de Depósito en Garantía', 'prepaidSubtotal': 'Subtotal ($)',
+                'prepaid': 'Prepagos', 'closingDate': 'Fecha de Cierre', 'prepaidDays': 'Días Prepagos (Cálculo Automático)', 'prepaidTax': 'Impuesto Predial Prepagado ($)', 'escrowMonths': 'Meses de Depósito en Garantía', 'prepaidSubtotal': 'Subtotal ($)', 'noteRate': 'Tasa de Nota (%)', 'prepaidInterest': 'Interés Prepagado ($)', 'annualPropertyTax': 'Impuesto Predial Anual ($)', 'taxEscrowMonths': 'Meses de Reserva de Impuestos', 'taxEscrowReserve': 'Reserva de Impuestos ($)', 'annualInsurance': 'Seguro Anual ($)', 'insuranceEscrowMonths': 'Meses de Reserva de Seguro', 'insuranceEscrowReserve': 'Reserva de Seguro ($)', 'monthsText': ' meses',
                 'credits': 'Créditos', 'lenderCredit': 'Crédito del Prestamista ($)', 'sellerCredit': 'Crédito del Vendedor ($)', 'calculateTotal': 'Calcular Costo Total',
                 'aboutTitle': 'ℹ️ Acerca de', 'languageSection': 'Idioma / Selección de Idioma', 'languageDesc': 'Este sitio web soporta chino, inglés y español',
                 'helpSection': 'Ayuda / Instrucciones de Uso', 'helpBuySell': 'Ingrese el precio de la casa, pago inicial, tasa de interés, etc. para calcular el pago mensual, LTV, DTI y otros indicadores clave. Soporta tipos de préstamo Convencional, FHA, VA, DSCR y otros.',
@@ -1203,10 +1256,10 @@
                 'disclaimerEn': 'This calculator is for reference only and does not constitute loan advice or commitment. Actual loan terms are subject to lender approval. Interest rates, fees, etc. may vary based on individual credit, location, and lender. Please consult a professional loan advisor before making financial decisions.',
                 'footerHelp': 'Ayuda', 'footerContact': 'Contáctenos', 'footerVersion': 'Historial de Versiones', 'footerDisclaimer': 'Descargo de Responsabilidad', 'footerCopyright': '© 2026 Loan Calculator Suite. Todos los derechos reservados.', 'footerVersionText': 'Versión 1.0.1 | Última Actualización: 2026-03-21',
                 'modalTitle': 'Resultados del Cálculo',
-                'resultMonthlyPayment': 'Pago Mensual Total', 'resultLoanAmount': 'Monto Total del Préstamo', 'resultLtv': 'LTV', 'resultPI': 'P&I', 'resultPrincipalInterest': 'Principal e Interés', 'resultPropertyTax': 'Impuesto Predial', 'resultHomeInsurance': 'Seguro del Hogar', 'resultPmi': 'PMI', 'resultHoa': 'HOA', 'resultOtherDebts': 'Otras Deudas', 'resultOtherProperties': 'Otras Propiedades', 'resultPitiTotal': 'PITI + Otros',
+                'resultMonthlyPayment': 'Pago Mensual Total', 'resultLoanAmount': 'Monto Total del Préstamo', 'resultLtv': 'LTV', 'resultPI': 'P&I', 'resultPrincipalInterest': 'Principal e Interés', 'resultPropertyTax': 'Impuesto Predial', 'resultHomeInsurance': 'Seguro del Hogar', 'resultPmi': 'PMI', 'resultHoa': 'HOA', 'resultOtherDebts': 'Otras Deudas', 'resultOtherProperties': 'Otras Propiedades', 'resultOtherPropertyPi': 'P&I de Otra Propiedad', 'resultPitiTotal': 'PITI + Otros',
                 'requiredIncomeTitle': 'Ingreso Mensual Requerido', 'requiredIncomeDesc': 'Según los estándares DTI, necesita alcanzar el siguiente ingreso mensual para calificar para el préstamo:', 'dti36Conservative': '36% DTI (Conservador)', 'dti43Standard': '43% DTI (Estándar)', 'dti50Aggressive': '50% DTI (Agresivo)',
                 'resultNewLoan': 'Nuevo Monto de Préstamo', 'resultNewLtv': 'Nuevo LTV', 'resultCashAvailable': 'Efectivo Disponible', 'resultNewPayment': 'Nuevo Pago', 'resultCurrentPayment': 'Pago Actual', 'resultMonthlySaving': 'Ahorro Mensual', 'resultBreakEven': 'Punto de Equilibrio', 'resultBreakEvenMonths': ' meses',
-                'resultW2Income': 'Ingreso Mensual W2', 'resultHourlyIncome': 'Ingreso Mensual por Hora', 'resultSelfEmployedIncome': 'Ingreso Mensual por Cuenta Propia', 'resultRentalIncome': 'Ingreso Mensual por Alquiler (75%)', 'resultChildSupport': 'Manutención de Niños', 'resultSocialSecurity': 'Seguro Social', 'resultOther': 'Otro', 'resultTotalIncome': 'Ingreso Total',
+                'resultW2Income': 'Ingreso Mensual W2', 'resultHourlyIncome': 'Ingreso Mensual por Hora', 'resultSelfEmployedIncome': 'Ingreso Mensual por Cuenta Propia', 'resultRentalIncome': 'Ingreso Mensual por Alquiler (75%)', 'resultAdditionalJobs': 'Trabajos Adicionales', 'resultAdditionalSelfEmployed': 'Cuenta Propia Adicional', 'resultAdditionalRentalIncome': 'Ingreso Adicional por Alquiler', 'resultChildSupport': 'Manutención de Niños', 'resultSocialSecurity': 'Seguro Social', 'resultOther': 'Otro', 'resultTotalIncome': 'Ingreso Total',
                 'resultDownPayment': 'Pago Inicial', 'resultTotalCost': 'Costo Total', 'resultLenderFeesSubtotal': 'Subtotal de Comisiones del Prestamista', 'resultThirdPartySubtotal': 'Subtotal de Terceros', 'resultPrepaidSubtotal': 'Subtotal de Prepagos', 'resultTotalClosingCost': 'Costo Total de Cierre', 'daysText': ' días',
                 'alertHelpTitle': 'Ayuda:', 'alertHelpContent': '\n\n1. Comprar/Vender: Ingrese precio de la casa, pago inicial, tasa, etc. para calcular pago mensual y DTI\n2. Refinanciar: Compare préstamos, calcule ahorro y tiempo de recuperación\n3. Ingresos: Resuma todas las fuentes de ingresos\n4. Costos de Cierre: Cálculo detallado de tarifas de transacción\n\nContacto: daviddairealty@gmail.com',
                 'alertVersionTitle': 'Historial de Versiones:', 'alertVersionContent': '\n\nv1.0.1 (2026-03-21)\n- Agregado cálculo de ingresos por alquiler DSCR\n- Agregada comparación de préstamo VA\n- Refactorizada lógica de cálculo de ingresos\n- Soporte para ingresos de múltiples trabajos\n\nv1.0.0 (2026-03-21)\n- Lanzamiento inicial\n- 5 funciones principales lanzadas\n- Diseño de UI estilo Apple',
@@ -1261,9 +1314,19 @@
             }
             
             // 重新渲染动态生成的内容（如负债字段、房产字段的 placeholder）
-            document.querySelectorAll('.bs-debt-input, .bs-property-input').forEach(el => {
+            document.querySelectorAll('.bs-debt-input').forEach(el => {
                 if (el && translations[lang] && translations[lang]['extraDebt']) {
                     el.placeholder = translations[lang]['extraDebt'];
+                }
+            });
+            document.querySelectorAll('.bs-property-input').forEach(el => {
+                if (el && translations[lang] && translations[lang]['extraProperty']) {
+                    el.placeholder = translations[lang]['extraProperty'];
+                }
+            });
+            document.querySelectorAll('.bs-property-pi-input').forEach(el => {
+                if (el && translations[lang] && translations[lang]['extraPropertyPi']) {
+                    el.placeholder = translations[lang]['extraPropertyPi'];
                 }
             });
         }
@@ -1304,6 +1367,7 @@
             
             // 滚动到顶部
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            saveFormState();
         }
         
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1332,17 +1396,422 @@
             container.appendChild(div);
             const lang = localStorage.getItem('selectedLang') || 'zh';
             changeLanguage(lang);
+            saveFormState();
         }
 
-        function addPropertyField(containerId, inputClass) {
+        function addPropertyField(containerId, inputClass, placeholderKey) {
             const container = document.getElementById(containerId);
             const div = document.createElement('div');
             div.className = 'form-group';
             div.style.marginBottom = '8px';
-            div.innerHTML = `<input type="number" class="${inputClass}" data-i18n-placeholder="extraProperty" value="0">`;
+            if (placeholderKey) {
+                div.innerHTML = `<input type="number" class="${inputClass}" data-i18n-placeholder="${placeholderKey}" value="0">`;
+            } else {
+                div.innerHTML = `<input type="number" class="${inputClass}" data-i18n-placeholder="extraProperty" value="0">`;
+            }
             container.appendChild(div);
             const lang = localStorage.getItem('selectedLang') || 'zh';
             changeLanguage(lang);
+            saveFormState();
+        }
+
+        function restoreNumberFieldList(containerId, inputClass, values, placeholderKey) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            container.innerHTML = '';
+            const safeValues = values && values.length ? values : ['0'];
+            safeValues.forEach(value => {
+                const div = document.createElement('div');
+                div.className = 'form-group';
+                div.style.marginBottom = '8px';
+                if (placeholderKey) {
+                    div.innerHTML = `<input type="number" class="${inputClass}" data-i18n-placeholder="${placeholderKey}" value="${value}">`;
+                } else {
+                    div.innerHTML = `<input type="number" class="${inputClass}" data-i18n-placeholder="extraProperty" value="${value}">`;
+                }
+                container.appendChild(div);
+            });
+
+            const lang = localStorage.getItem('selectedLang') || 'zh';
+            changeLanguage(lang);
+        }
+
+        const FORM_STATE_KEY = 'mortgage-calculator-form-state-v2';
+        let extraJobCounter = 0;
+        let extraSelfEmploymentCounter = 0;
+        let extraRentalCounter = 0;
+
+        function collectDynamicFormState() {
+            return {
+                values: Array.from(document.querySelectorAll('input[id], select[id], textarea[id]'))
+                    .filter(el => el.type !== 'button' && el.type !== 'submit')
+                    .reduce((acc, el) => {
+                        if (el.type === 'radio') return acc;
+                        acc[el.id] = el.value;
+                        return acc;
+                    }, {}),
+                radios: {
+                    job1Type: document.querySelector('input[name="job1-type"]:checked')?.value || 'w2',
+                    job2Type: document.querySelector('input[name="job2-type"]:checked')?.value || 'w2'
+                },
+                job2Visible: document.getElementById('job2-card')?.style.display !== 'none',
+                activeTab: document.querySelector('.tab-btn.active')?.getAttribute('data-tab') || 'buy-sell',
+                otherDebts: Array.from(document.querySelectorAll('.bs-debt-input')).map(el => el.value || 0),
+                otherProperties: Array.from(document.querySelectorAll('.bs-property-input')).map(el => el.value || 0),
+                otherPropertyPi: Array.from(document.querySelectorAll('.bs-property-pi-input')).map(el => el.value || 0),
+                extraJobs: Array.from(document.querySelectorAll('.extra-job-card')).map(card => {
+                    const id = card.dataset.jobId;
+                    return {
+                        type: document.querySelector(`input[name="${id}-type"]:checked`)?.value || 'w2',
+                        period: document.getElementById(`${id}-w2-period`)?.value || 'monthly',
+                        amount: document.getElementById(`${id}-w2-amount`)?.value || 0,
+                        rate: document.getElementById(`${id}-hourly-rate`)?.value || 0,
+                        hours: document.getElementById(`${id}-hours-per-week`)?.value || 0,
+                        bonus: document.getElementById(`${id}-bonus`)?.value || 0
+                    };
+                }),
+                extraSelfEmployed: Array.from(document.querySelectorAll('.extra-self-employed-card')).map(card => {
+                    const id = card.dataset.selfId;
+                    return {
+                        ownership: document.getElementById(`${id}-ownership`)?.value || 100,
+                        businessType: document.getElementById(`${id}-business-type`)?.value || 'du',
+                        year1Income: document.getElementById(`${id}-year1-income`)?.value || 0,
+                        year2Income: document.getElementById(`${id}-year2-income`)?.value || 0,
+                        year1Depreciation: document.getElementById(`${id}-year1-depreciation`)?.value || 0,
+                        year2Depreciation: document.getElementById(`${id}-year2-depreciation`)?.value || 0
+                    };
+                }),
+                extraRental: Array.from(document.querySelectorAll('.extra-rental-card')).map(card => {
+                    const id = card.dataset.rentalId;
+                    return {
+                        scheduleE: document.getElementById(`${id}-schedule-e`)?.value || 0,
+                        leaseMonths: document.getElementById(`${id}-lease-months`)?.value || 12
+                    };
+                })
+            };
+        }
+
+        function saveFormState() {
+            try {
+                localStorage.setItem(FORM_STATE_KEY, JSON.stringify(collectDynamicFormState()));
+            } catch (error) {
+                console.error('Unable to save form state:', error);
+            }
+        }
+
+        function restoreFormState() {
+            const raw = localStorage.getItem(FORM_STATE_KEY);
+            if (!raw) return;
+
+            try {
+                const state = JSON.parse(raw);
+
+                document.getElementById('extra-jobs-container').innerHTML = '';
+                document.getElementById('extra-self-employed-container').innerHTML = '';
+                document.getElementById('extra-rental-container').innerHTML = '';
+                restoreNumberFieldList('bs-debts-container', 'bs-debt-input', state.otherDebts);
+                restoreNumberFieldList('bs-properties-container', 'bs-property-input', state.otherProperties);
+                restoreNumberFieldList('bs-property-pi-container', 'bs-property-pi-input', state.otherPropertyPi, 'extraPropertyPi');
+                extraJobCounter = 0;
+                extraSelfEmploymentCounter = 0;
+                extraRentalCounter = 0;
+
+                Object.entries(state.values || {}).forEach(([id, value]) => {
+                    const el = document.getElementById(id);
+                    if (!el || el.type === 'radio' || el.readOnly) return;
+                    el.value = value;
+                });
+
+                if (state.job2Visible) {
+                    document.getElementById('job2-card').style.display = 'block';
+                } else {
+                    document.getElementById('job2-card').style.display = 'none';
+                }
+
+                if (state.radios?.job1Type) {
+                    const radio = document.querySelector(`input[name="job1-type"][value="${state.radios.job1Type}"]`);
+                    if (radio) radio.checked = true;
+                }
+                if (state.radios?.job2Type) {
+                    const radio = document.querySelector(`input[name="job2-type"][value="${state.radios.job2Type}"]`);
+                    if (radio) radio.checked = true;
+                }
+
+                (state.extraJobs || []).forEach(job => addExtraJob(job));
+                (state.extraSelfEmployed || []).forEach(entry => addSelfEmploymentEntry(entry));
+                (state.extraRental || []).forEach(entry => addRentalEntry(entry));
+
+                toggleJobType('job1');
+                toggleJobType('job2');
+                calculateRentalIncome();
+                updatePmiAutoValue();
+                updateClosingCostPrepaidBreakdown();
+
+                if (state.activeTab && document.getElementById(state.activeTab)) {
+                    switchTab(state.activeTab);
+                }
+            } catch (error) {
+                console.error('Unable to restore form state:', error);
+            }
+        }
+
+        function addExtraJob(data = {}) {
+            extraJobCounter += 1;
+            const id = `extra-job-${extraJobCounter}`;
+            const container = document.getElementById('extra-jobs-container');
+            if (!container) return;
+
+            const div = document.createElement('div');
+            div.className = 'job-card extra-job-card';
+            div.dataset.jobId = id;
+            div.innerHTML = `
+                <div class="job-header">
+                    <span class="job-title" data-i18n="additionalJob">Additional Job</span>
+                    <button type="button" class="remove-job-btn" data-i18n="removeJob" onclick="this.closest('.extra-job-card').remove(); saveFormState();">Remove</button>
+                </div>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="${id}-type" value="w2" ${data.type !== 'hourly' ? 'checked' : ''} onclick="toggleExtraJobType('${id}')">
+                        <span data-i18n="w2Salary">W2</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="${id}-type" value="hourly" ${data.type === 'hourly' ? 'checked' : ''} onclick="toggleExtraJobType('${id}')">
+                        <span data-i18n="hourlyWorker">Hourly</span>
+                    </label>
+                </div>
+                <div id="${id}-w2-fields">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label data-i18n="w2Period">Period</label>
+                            <select id="${id}-w2-period">
+                                <option value="monthly" data-i18n="periodMonthly" ${data.period === 'monthly' ? 'selected' : ''}>Monthly</option>
+                                <option value="biweekly" data-i18n="periodBiweekly" ${data.period === 'biweekly' ? 'selected' : ''}>Biweekly</option>
+                                <option value="weekly" data-i18n="periodWeekly" ${data.period === 'weekly' ? 'selected' : ''}>Weekly</option>
+                                <option value="annually" data-i18n="periodAnnually" ${data.period === 'annually' ? 'selected' : ''}>Annually</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="w2Amount">Amount ($)</label>
+                            <input type="number" id="${id}-w2-amount" value="${data.amount || 0}">
+                        </div>
+                    </div>
+                </div>
+                <div id="${id}-hourly-fields" style="display: none;">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label data-i18n="hourlyRate">Hourly Rate ($)</label>
+                            <input type="number" id="${id}-hourly-rate" value="${data.rate || 0}">
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="hoursPerWeek">Hours / Week</label>
+                            <input type="number" id="${id}-hours-per-week" value="${data.hours || 0}">
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="bonus">Bonus / Year ($)</label>
+                            <input type="number" id="${id}-bonus" value="${data.bonus || 0}">
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="monthlyIncome">Monthly Income ($)</label>
+                            <input type="text" id="${id}-monthly-total" readonly>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            bindExtraJobEvents(id);
+            toggleExtraJobType(id);
+            saveFormState();
+        }
+
+        function toggleExtraJobType(id) {
+            const type = document.querySelector(`input[name="${id}-type"]:checked`)?.value;
+            const w2Fields = document.getElementById(`${id}-w2-fields`);
+            const hourlyFields = document.getElementById(`${id}-hourly-fields`);
+            if (!w2Fields || !hourlyFields) return;
+            w2Fields.style.display = type === 'w2' ? 'block' : 'none';
+            hourlyFields.style.display = type === 'hourly' ? 'block' : 'none';
+            calculateExtraJobIncome(id);
+        }
+
+        function calculateExtraJobIncome(id) {
+            const type = document.querySelector(`input[name="${id}-type"]:checked`)?.value;
+            const monthlyTotal = document.getElementById(`${id}-monthly-total`);
+            if (!monthlyTotal) return 0;
+
+            let monthly = 0;
+            if (type === 'w2') {
+                const period = document.getElementById(`${id}-w2-period`)?.value;
+                const amount = parseFloat(document.getElementById(`${id}-w2-amount`)?.value) || 0;
+                switch (period) {
+                    case 'monthly': monthly = amount; break;
+                    case 'biweekly': monthly = amount * 26 / 12; break;
+                    case 'weekly': monthly = amount * 52 / 12; break;
+                    case 'annually': monthly = amount / 12; break;
+                }
+            } else {
+                const rate = parseFloat(document.getElementById(`${id}-hourly-rate`)?.value) || 0;
+                const hours = parseFloat(document.getElementById(`${id}-hours-per-week`)?.value) || 0;
+                const bonus = parseFloat(document.getElementById(`${id}-bonus`)?.value) || 0;
+                monthly = (rate * hours * 52 / 12) + (bonus / 12);
+            }
+
+            monthlyTotal.value = formatCurrency(monthly);
+            return monthly;
+        }
+
+        function bindExtraJobEvents(id) {
+            [`${id}-w2-period`, `${id}-w2-amount`, `${id}-hourly-rate`, `${id}-hours-per-week`, `${id}-bonus`].forEach(fieldId => {
+                const el = document.getElementById(fieldId);
+                if (el) {
+                    el.addEventListener('input', () => {
+                        calculateExtraJobIncome(id);
+                        saveFormState();
+                    });
+                    el.addEventListener('change', () => {
+                        calculateExtraJobIncome(id);
+                        saveFormState();
+                    });
+                }
+            });
+        }
+
+        function addSelfEmploymentEntry(data = {}) {
+            extraSelfEmploymentCounter += 1;
+            const id = `extra-self-${extraSelfEmploymentCounter}`;
+            const container = document.getElementById('extra-self-employed-container');
+            if (!container) return;
+
+            const div = document.createElement('div');
+            div.className = 'job-card extra-self-employed-card';
+            div.dataset.selfId = id;
+            div.innerHTML = `
+                <div class="job-header">
+                    <span class="job-title" data-i18n="additionalSelfEmployed">Additional Self-Employed</span>
+                    <button type="button" class="remove-job-btn" data-i18n="removeJob" onclick="this.closest('.extra-self-employed-card').remove(); saveFormState();">Remove</button>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label data-i18n="ownership">Ownership (%)</label>
+                        <input type="number" id="${id}-ownership" value="${data.ownership ?? 100}" min="0" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="businessType">Tax Type</label>
+                        <select id="${id}-business-type">
+                            <option value="du" data-i18n="businessTypeDu" ${data.businessType !== 'lp' ? 'selected' : ''}>DU</option>
+                            <option value="lp" data-i18n="businessTypeLp" ${data.businessType === 'lp' ? 'selected' : ''}>LP</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-grid" style="margin-top: 16px;">
+                    <div class="form-group">
+                        <label data-i18n="year1Income">Year 1 Income ($)</label>
+                        <input type="number" id="${id}-year1-income" value="${data.year1Income || 0}">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="year2Income">Year 2 Income ($)</label>
+                        <input type="number" id="${id}-year2-income" value="${data.year2Income || 0}">
+                    </div>
+                </div>
+                <div class="form-grid" style="margin-top: 16px;">
+                    <div class="form-group">
+                        <label data-i18n="year1Depreciation">Year 1 Depreciation ($)</label>
+                        <input type="number" id="${id}-year1-depreciation" value="${data.year1Depreciation || 0}">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="year2Depreciation">Year 2 Depreciation ($)</label>
+                        <input type="number" id="${id}-year2-depreciation" value="${data.year2Depreciation || 0}">
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            [
+                `${id}-ownership`,
+                `${id}-business-type`,
+                `${id}-year1-income`,
+                `${id}-year2-income`,
+                `${id}-year1-depreciation`,
+                `${id}-year2-depreciation`
+            ].forEach(fieldId => {
+                const el = document.getElementById(fieldId);
+                if (el) {
+                    el.addEventListener('input', saveFormState);
+                    el.addEventListener('change', saveFormState);
+                }
+            });
+            saveFormState();
+        }
+
+        function calculateSelfEmploymentEntryMonthly(prefix) {
+            const ownership = parseFloat(document.getElementById(`${prefix}-ownership`)?.value) || 100;
+            const year1Income = parseFloat(document.getElementById(`${prefix}-year1-income`)?.value) || 0;
+            const year2Income = parseFloat(document.getElementById(`${prefix}-year2-income`)?.value) || 0;
+            const year1Depreciation = parseFloat(document.getElementById(`${prefix}-year1-depreciation`)?.value) || 0;
+            const year2Depreciation = parseFloat(document.getElementById(`${prefix}-year2-depreciation`)?.value) || 0;
+            const businessType = document.getElementById(`${prefix}-business-type`)?.value || 'du';
+            if (businessType === 'du') {
+                return ((year1Income + year2Income + year1Depreciation + year2Depreciation) / 24) * (ownership / 100);
+            }
+            return ((year1Income + year1Depreciation) / 12) * (ownership / 100);
+        }
+
+        function addRentalEntry(data = {}) {
+            extraRentalCounter += 1;
+            const id = `extra-rental-${extraRentalCounter}`;
+            const container = document.getElementById('extra-rental-container');
+            if (!container) return;
+
+            const div = document.createElement('div');
+            div.className = 'job-card extra-rental-card';
+            div.dataset.rentalId = id;
+            div.innerHTML = `
+                <div class="job-header">
+                    <span class="job-title" data-i18n="additionalRental">Additional Rental</span>
+                    <button type="button" class="remove-job-btn" data-i18n="removeJob" onclick="this.closest('.extra-rental-card').remove(); saveFormState();">Remove</button>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label data-i18n="scheduleE">Schedule E Annual Income ($)</label>
+                        <input type="number" id="${id}-schedule-e" value="${data.scheduleE || 0}">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="leaseMonths">Lease Months</label>
+                        <input type="number" id="${id}-lease-months" value="${data.leaseMonths || 12}">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="rentalMonthly75">Monthly Rental Income ($)</label>
+                        <input type="text" id="${id}-monthly" readonly>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            bindExtraRentalEvents(id);
+            calculateExtraRentalIncome(id);
+            saveFormState();
+        }
+
+        function calculateExtraRentalIncome(id) {
+            const annual = parseFloat(document.getElementById(`${id}-schedule-e`)?.value) || 0;
+            const monthly = (annual * 0.75) / 12;
+            const output = document.getElementById(`${id}-monthly`);
+            if (output) output.value = formatCurrency(monthly);
+            return monthly;
+        }
+
+        function bindExtraRentalEvents(id) {
+            [`${id}-schedule-e`, `${id}-lease-months`].forEach(fieldId => {
+                const el = document.getElementById(fieldId);
+                if (el) {
+                    el.addEventListener('input', () => {
+                        calculateExtraRentalIncome(id);
+                        saveFormState();
+                    });
+                    el.addEventListener('change', () => {
+                        calculateExtraRentalIncome(id);
+                        saveFormState();
+                    });
+                }
+            });
         }
 
         // ==================== 收入计算 - 工作管理 ====================
@@ -1362,16 +1831,20 @@
 
         function addJob2() {
             document.getElementById('job2-card').style.display = 'block';
+            saveFormState();
         }
 
         function removeJob2() {
             document.getElementById('job2-card').style.display = 'none';
             document.querySelectorAll('input[name="job2-type"]').forEach(r => r.checked = false);
+            const defaultJob2Type = document.querySelector('input[name="job2-type"][value="w2"]');
+            if (defaultJob2Type) defaultJob2Type.checked = true;
             document.getElementById('job2-w2-amount').value = 0;
             document.getElementById('job2-hourly-rate').value = 0;
             document.getElementById('job2-hours-per-week').value = 0;
             document.getElementById('job2-bonus').value = 0;
             document.getElementById('job2-monthly-total').value = '';
+            saveFormState();
         }
 
         function calculateJobIncome(jobNum) {
@@ -1416,7 +1889,7 @@
 
         // 绑定收入计算事件
         ['job1', 'job2'].forEach(jobNum => {
-            document.querySelectorAll(`#job${jobNum}-w2-period, #job${jobNum}-w2-amount, #job${jobNum}-hourly-rate, #job${jobNum}-hours-per-week, #job${jobNum}-bonus`).forEach(el => {
+            document.querySelectorAll(`#${jobNum}-w2-period, #${jobNum}-w2-amount, #${jobNum}-hourly-rate, #${jobNum}-hours-per-week, #${jobNum}-bonus`).forEach(el => {
                 if (el) el.addEventListener('input', () => calculateJobIncome(jobNum));
             });
             document.querySelectorAll(`input[name="${jobNum}-type"]`).forEach(radio => {
@@ -1458,6 +1931,35 @@
         
         setupDownPaymentSync('bs-home-price', 'bs-down-payment', 'bs-down-percent');
         setupDownPaymentSync('cc-home-price', 'cc-down-payment', 'cc-down-percent');
+
+        function updatePmiAutoValue() {
+            const homePriceInput = document.getElementById('bs-home-price');
+            const downPaymentInput = document.getElementById('bs-down-payment');
+            const pmiInput = document.getElementById('bs-pmi');
+            if (!homePriceInput || !downPaymentInput || !pmiInput) return;
+
+            const homePrice = parseFloat(homePriceInput.value) || 0;
+            const downPayment = parseFloat(downPaymentInput.value) || 0;
+            if (homePrice <= 0) {
+                pmiInput.value = 0;
+                return;
+            }
+
+            const loanAmount = Math.max(homePrice - downPayment, 0);
+            const ltv = (loanAmount / homePrice) * 100;
+            const autoPmi = ltv > 80 ? (loanAmount * 0.005) / 12 : 0;
+            pmiInput.value = autoPmi ? autoPmi.toFixed(2) : '0';
+        }
+
+        ['bs-home-price', 'bs-down-payment', 'bs-down-percent'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', updatePmiAutoValue);
+                el.addEventListener('change', updatePmiAutoValue);
+            }
+        });
+
+        updatePmiAutoValue();
 
         // ==================== Closing Date 计算 ====================
         const ccClosingDate = document.getElementById('cc-closing-date');
@@ -1512,9 +2014,69 @@
             if (e.target.id === 'results-modal') closeModal();
         });
 
+        function getClosingMonthEndDays(closingDateValue) {
+            if (!closingDateValue) return 0;
+            const closing = new Date(closingDateValue + 'T12:00:00');
+            if (Number.isNaN(closing.getTime())) return 0;
+            const lastDay = new Date(closing.getFullYear(), closing.getMonth() + 1, 0).getDate();
+            return Math.max(0, lastDay - closing.getDate());
+        }
+
+        function updateClosingCostPrepaidBreakdown() {
+            const homePriceInput = document.getElementById('cc-home-price');
+            const downPaymentInput = document.getElementById('cc-down-payment');
+            const closingDateInput = document.getElementById('cc-closing-date');
+            const prepaidDaysInput = document.getElementById('cc-prepaid-days');
+            const loanAmountDisplay = document.getElementById('cc-loan-amount-display');
+            const noteRateInput = document.getElementById('cc-note-rate');
+            const prepaidInterestInput = document.getElementById('cc-prepaid-interest');
+            const annualPropertyTaxInput = document.getElementById('cc-annual-property-tax');
+            const taxEscrowMonthsInput = document.getElementById('cc-tax-escrow-months');
+            const taxEscrowAmountInput = document.getElementById('cc-tax-escrow-amount');
+            const annualInsuranceInput = document.getElementById('cc-annual-insurance');
+            const insuranceEscrowMonthsInput = document.getElementById('cc-insurance-escrow-months');
+            const insuranceEscrowAmountInput = document.getElementById('cc-insurance-escrow-amount');
+            const prepaidSubtotalInput = document.getElementById('cc-prepaid-subtotal');
+
+            if (!homePriceInput || !downPaymentInput || !closingDateInput || !prepaidDaysInput || !loanAmountDisplay || !noteRateInput || !prepaidInterestInput || !annualPropertyTaxInput || !taxEscrowMonthsInput || !taxEscrowAmountInput || !annualInsuranceInput || !insuranceEscrowMonthsInput || !insuranceEscrowAmountInput || !prepaidSubtotalInput) {
+                return;
+            }
+
+            const homePrice = parseFloat(homePriceInput.value) || 0;
+            const downPayment = parseFloat(downPaymentInput.value) || 0;
+            const loanAmount = Math.max(homePrice - downPayment, 0);
+            const noteRate = parseFloat(noteRateInput.value) || 0;
+            const annualPropertyTax = parseFloat(annualPropertyTaxInput.value) || 0;
+            const annualInsurance = parseFloat(annualInsuranceInput.value) || 0;
+            const taxEscrowMonths = parseFloat(taxEscrowMonthsInput.value) || 0;
+            const insuranceEscrowMonths = parseFloat(insuranceEscrowMonthsInput.value) || 0;
+            const prepaidDays = getClosingMonthEndDays(closingDateInput.value || '');
+            const prepaidInterest = loanAmount * (noteRate / 100) / 365 * prepaidDays;
+            const taxEscrowAmount = (annualPropertyTax / 12) * taxEscrowMonths;
+            const insuranceEscrowAmount = (annualInsurance / 12) * insuranceEscrowMonths;
+            const prepaidSubtotal = prepaidInterest + taxEscrowAmount + insuranceEscrowAmount;
+
+            prepaidDaysInput.value = prepaidDays + ' days';
+            loanAmountDisplay.value = formatCurrency(loanAmount);
+            prepaidInterestInput.value = formatCurrency(prepaidInterest);
+            taxEscrowAmountInput.value = formatCurrency(taxEscrowAmount);
+            insuranceEscrowAmountInput.value = formatCurrency(insuranceEscrowAmount);
+            prepaidSubtotalInput.value = formatCurrency(prepaidSubtotal);
+        }
+
         // ==================== FHA 数据 (2026 完整 56 州 + 领地) ====================
         // 基准限额：1 Unit = $498,257, 2 Units = $637,950, 3 Units = $771,125, 4 Units = $958,350
         // 高成本地区限额更高 (如加州、纽约等)
+        ['cc-home-price', 'cc-down-payment', 'cc-down-percent', 'cc-closing-date', 'cc-note-rate', 'cc-annual-property-tax', 'cc-tax-escrow-months', 'cc-annual-insurance', 'cc-insurance-escrow-months'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', updateClosingCostPrepaidBreakdown);
+                el.addEventListener('change', updateClosingCostPrepaidBreakdown);
+            }
+        });
+
+        updateClosingCostPrepaidBreakdown();
+
         const fhaData = {
             "AL": { name: "Alabama", counties: {
                 "Autauga County": { "1": 498257, "2": 637950, "3": 771125, "4": 958350 },
@@ -1934,6 +2496,17 @@
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('selectedLang') || 'zh';
             changeLanguage(savedLang);
+            restoreFormState();
+            document.addEventListener('input', (event) => {
+                if (event.target.matches('input, select, textarea')) {
+                    saveFormState();
+                }
+            });
+            document.addEventListener('change', (event) => {
+                if (event.target.matches('input, select, textarea')) {
+                    saveFormState();
+                }
+            });
         });
 
         // ==================== 计算器逻辑 ====================
@@ -1955,6 +2528,8 @@
             
             let totalProperties = 0;
             document.querySelectorAll('.bs-property-input').forEach(input => { totalProperties += parseFloat(input.value) || 0; });
+            let totalPropertyPi = 0;
+            document.querySelectorAll('.bs-property-pi-input').forEach(input => { totalPropertyPi += parseFloat(input.value) || 0; });
             
             const loanAmount = homePrice - downPayment;
             const ltv = (loanAmount / homePrice) * 100;
@@ -1965,7 +2540,7 @@
             const propertyTaxMonthly = propertyTax / 12;
             const insuranceMonthly = insurance / 12;
             
-            let totalMonthly = principalInterest + propertyTaxMonthly + insuranceMonthly + hoa + pmi + totalDebts + totalProperties;
+            let totalMonthly = principalInterest + propertyTaxMonthly + insuranceMonthly + hoa + pmi + totalDebts + totalProperties + totalPropertyPi;
             
             // DSCR 计算
             let dscrContent = '';
@@ -1999,14 +2574,14 @@
             }
             
             // 计算月债务总额
-            const totalMonthlyDebt = principalInterest + propertyTaxMonthly + insuranceMonthly + hoa + pmi + totalDebts + totalProperties;
+            const totalMonthlyDebt = principalInterest + propertyTaxMonthly + insuranceMonthly + hoa + pmi + totalDebts + totalProperties + totalPropertyPi;
             
             // 反推需要的月收入
             const requiredIncome36 = totalMonthlyDebt / 0.36;
             const requiredIncome43 = totalMonthlyDebt / 0.43;
             const requiredIncome50 = totalMonthlyDebt / 0.50;
             
-            const content = `
+            let content = `
                 ${dscrContent}
                 <div class="result-grid">
                     <div class="result-item">
@@ -2035,6 +2610,7 @@
                     <tr><td>HOA</td><td>${formatCurrency(hoa)}</td></tr>
                     <tr><td data-i18n="resultOtherDebts">其他负债</td><td>${formatCurrency(totalDebts)}</td></tr>
                     <tr><td data-i18n="resultOtherProperties">其他房产</td><td>${formatCurrency(totalProperties)}</td></tr>
+                    <tr><td data-i18n="resultOtherPropertyPi">Other Property P&amp;I</td><td>${formatCurrency(totalPropertyPi)}</td></tr>
                     <tr class="total"><td data-i18n="resultPitiTotal">PITI + 其他</td><td>${formatCurrency(totalMonthly)}</td></tr>
                 </table>
                 
@@ -2150,6 +2726,10 @@
                     job2Monthly = (rate * hours * 52 / 12) + (bonus / 12);
                 }
             }
+            let extraJobsMonthly = 0;
+            document.querySelectorAll('.extra-job-card').forEach(card => {
+                extraJobsMonthly += calculateExtraJobIncome(card.dataset.jobId);
+            });
             
             // Self-Employed 收入
             const ownership = parseFloat(document.getElementById('inc-ownership').value) || 100;
@@ -2166,16 +2746,24 @@
                 // LP (Loan Prospector - Freddie Mac): (最近 1 年 Net Income + Depreciation) ÷ 12
                 selfEmployedMonthly = ((year1Income + year1Depreciation) / 12) * (ownership / 100);
             }
+            let extraSelfEmployedMonthly = 0;
+            document.querySelectorAll('.extra-self-employed-card').forEach(card => {
+                extraSelfEmployedMonthly += calculateSelfEmploymentEntryMonthly(card.dataset.selfId);
+            });
             
             // Rental 收入
             const rentalMonthlyVal = parseFloat(document.getElementById('inc-rental-monthly').value.replace(/[^0-9.-]+/g,'')) || 0;
+            let extraRentalMonthly = 0;
+            document.querySelectorAll('.extra-rental-card').forEach(card => {
+                extraRentalMonthly += calculateExtraRentalIncome(card.dataset.rentalId);
+            });
             
             // 其他收入
             const childSupport = parseFloat(document.getElementById('inc-child-support').value) || 0;
             const socialSecurity = parseFloat(document.getElementById('inc-social-security').value) || 0;
             const other = parseFloat(document.getElementById('inc-other').value) || 0;
             
-            const totalMonthly = job1Monthly + job2Monthly + selfEmployedMonthly + rentalMonthlyVal + childSupport + socialSecurity + other;
+            const totalMonthly = job1Monthly + job2Monthly + extraJobsMonthly + selfEmployedMonthly + extraSelfEmployedMonthly + rentalMonthlyVal + extraRentalMonthly + childSupport + socialSecurity + other;
             
             const content = `
                 <table class="detail-table">
@@ -2190,6 +2778,18 @@
                 </table>
             `;
             
+            let extraIncomeRows = '';
+            if (extraJobsMonthly > 0) {
+                extraIncomeRows += `<tr><td data-i18n="resultAdditionalJobs">Additional Jobs</td><td>${formatCurrency(extraJobsMonthly)}</td></tr>`;
+            }
+            if (extraSelfEmployedMonthly > 0) {
+                extraIncomeRows += `<tr><td data-i18n="resultAdditionalSelfEmployed">Additional Self-Employed</td><td>${formatCurrency(extraSelfEmployedMonthly)}</td></tr>`;
+            }
+            if (extraRentalMonthly > 0) {
+                extraIncomeRows += `<tr><td data-i18n="resultAdditionalRentalIncome">Additional Rental Income</td><td>${formatCurrency(extraRentalMonthly)}</td></tr>`;
+            }
+            content = content.replace('<tr class="total">', `${extraIncomeRows}<tr class="total">`);
+
             openModal('💵 收入计算结果', content);
         });
 
@@ -2217,7 +2817,17 @@
             const escrowMonths = parseFloat(document.getElementById('cc-escrow-months').value) || 6;
             const monthlyTax = prepaidTax / 12;
             const escrowAmount = monthlyTax * escrowMonths;
-            const prepaidSubtotal = prepaidTax + escrowAmount;
+            const loanAmount = Math.max(homePrice - downPayment, 0);
+            const noteRate = parseFloat(document.getElementById('cc-note-rate').value) || 0;
+            const annualPropertyTax = parseFloat(document.getElementById('cc-annual-property-tax').value) || 0;
+            const annualInsurance = parseFloat(document.getElementById('cc-annual-insurance').value) || 0;
+            const taxEscrowMonths = parseFloat(document.getElementById('cc-tax-escrow-months').value) || 0;
+            const insuranceEscrowMonths = parseFloat(document.getElementById('cc-insurance-escrow-months').value) || 0;
+            const prepaidDays = getClosingMonthEndDays(document.getElementById('cc-closing-date').value || '');
+            const prepaidInterest = loanAmount * (noteRate / 100) / 365 * prepaidDays;
+            const taxEscrowAmount = (annualPropertyTax / 12) * taxEscrowMonths;
+            const insuranceEscrowAmount = (annualInsurance / 12) * insuranceEscrowMonths;
+            const prepaidSubtotal = prepaidInterest + taxEscrowAmount + insuranceEscrowAmount;
             document.getElementById('cc-prepaid-subtotal').value = formatCurrency(prepaidSubtotal);
             
             const lenderCredit = parseFloat(document.getElementById('cc-lender-credit').value) || 0;
@@ -2250,8 +2860,10 @@
                     <tr class="total"><td data-i18n="resultThirdPartySubtotal">Third Party 小计</td><td>${formatCurrency(thirdPartyFees)}</td></tr>
                     
                     <tr><td colspan="2" style="font-weight: 600; color: var(--primary-blue);">Prepaid</td></tr>
-                    <tr><td data-i18n="prepaidTax">预付地税</td><td>${formatCurrency(prepaidTax)}</td></tr>
-                    <tr><td>Escrow</td><td>${formatCurrency(escrowAmount)} (<span data-i18n="escrowMonths">Escrow 月份</span>: ${escrowMonths})</td></tr>
+                    <tr><td data-i18n="loanAmount">Loan Amount</td><td>${formatCurrency(loanAmount)}</td></tr>
+                    <tr><td data-i18n="prepaidInterest">Prepaid Interest</td><td>${formatCurrency(prepaidInterest)} (${prepaidDays} <span data-i18n="daysText">days</span> @ ${noteRate.toFixed(3)}%)</td></tr>
+                    <tr><td data-i18n="taxEscrowReserve">Tax Escrow Reserve</td><td>${formatCurrency(taxEscrowAmount)} (${taxEscrowMonths}<span data-i18n="monthsText"> months</span>)</td></tr>
+                    <tr><td data-i18n="insuranceEscrowReserve">Insurance Escrow Reserve</td><td>${formatCurrency(insuranceEscrowAmount)} (${insuranceEscrowMonths}<span data-i18n="monthsText"> months</span>)</td></tr>
                     <tr class="total"><td data-i18n="resultPrepaidSubtotal">Prepaid 小计</td><td>${formatCurrency(prepaidSubtotal)}</td></tr>
                     
                     <tr><td colspan="2" style="font-weight: 600; color: var(--success-green);">Credits</td></tr>
